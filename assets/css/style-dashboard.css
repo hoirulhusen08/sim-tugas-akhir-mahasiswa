@@ -1,0 +1,121 @@
+:root {
+    --color-primary-dark: #021e49;
+    --color-primary: #0b5acf;
+    --color-primary-hover: #2b7cf7;
+    --color-secondary: #23dab2;
+    --color-secondary-hover: #56EBCB;
+}
+
+.dropdown-menu a:active {
+    background-color: var(--color-primary);
+}
+a {
+	color: var(--color-primary);
+}
+a:hover {
+	color: var(--color-primary-hover);
+	text-decoration: none;
+}
+.nav-item .nav-link.active {
+    background-color: var(--color-primary-hover) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+	border: 1px solid var(--color-primary) !important;
+	box-shadow: 0 0 6px var(--color-primary-hover) !important;
+}
+
+.my-alert-success {
+	border: 1px solid #28A745 !important;
+	color: #28A745 !important;
+}
+.my-alert-success .close {
+	color: #113f1c !important;
+}
+.my-alert-success .close:hover {
+	color: #28A745 !important;
+}
+
+.my-alert-danger {
+	border: 1px solid #b10716 !important;
+	color: #b10716 !important;
+}
+.my-alert-danger .close {
+	color: #690911 !important;
+}
+.my-alert-danger .close:hover {
+	color: #b10716 !important;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	scrollbar-color: #F0F0F0 #808080;
+}
+
+.hr-sidebar {
+	border: 1px solid rgb(177, 177, 177);
+}
+
+::-webkit-scrollbar-thumb {
+	scrollbar-highlight-color: var(--color-primary);
+	background-color: var(--color-primary);
+	border-radius: 10px;
+	border: 2px solid #fff;
+}
+
+/* BUTTON GENERAL */
+.my-btn-custom {
+	background-color: var(--color-primary) !important;
+	color: #fff !important;
+	transition: all .3s;
+}
+.my-btn-custom:hover {
+	background-color: var(--color-primary-hover) !important;
+}
+
+/* MODAL POPUP */
+.bg-header-popup {
+	background-color: var(--color-primary) !important;
+	color: #fff !important;
+}
+.bg-header-popup .close {
+	color: #fff !important;
+}
+.bg-btn-popup {
+	background-color: var(--color-primary) !important;
+	color: #fff !important;
+	transition: all .3s;
+}
+.bg-btn-popup:hover {
+	background-color: var(--color-primary-hover) !important;
+}
+
+/* SIDEBAR */
+.my-sidebar-dark-primary {
+	background-color: var(--color-primary-dark) !important;
+}
+.my-sidebar-dark-primary .brand-text {
+	text-transform: uppercase;
+}
+.my-user-panel-sidebar {
+	background-color: var(--color-secondary);
+	position:absolute;
+	margin-left:-8px;
+}
+.my-user-panel-sidebar img {
+	border: 2px solid #fff;
+}
+
+
+/* MEDIA PRINT */
+@media print {
+	#notPrint {
+	  display: none !important;
+	}
+	.dt-buttons, .dataTables_filter, .dataTables_info, .dataTables_paginate .pagination {
+	  display: none !important;
+	}
+	th::after, th::before {
+		display: none !important;
+	}
+  }
