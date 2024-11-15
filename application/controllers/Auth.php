@@ -103,83 +103,103 @@ class Auth extends CI_Controller
 		}
 	}
 
-	// Halaman Register
-	public function register()
+	// Cek NBM atau NPM
+	public function checkNbmNpm()
 	{
-		// Jika sudah login tak boleh akses
-		if ($this->session->userdata('email')) {
-			redirect('/');
-		}
-
-		// Rules validation
-		$this->form_validation->set_rules('name', 'Name', 'required|trim', [
-			'required' => 'Inputan Nama harus diisi.'
-		]);
-		$this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[users.email]', [
-			'required' => 'Inputan Email harus diisi.',
-			'valid_email' => 'Email tidak sesuai.',
-			'is_unique' => 'Email terkait sudah terdaftar.'
-		]);
-		$this->form_validation->set_rules('password', 'Password', 'required|trim|min_length[8]|matches[password2]', [
-			'required' => 'Inputan Password harus diisi.',
-			'min_length' => 'Password minimal 8 karakter.',
-			'matches' => 'Kedua Password tidak sesuai.'
-		]);
-		$this->form_validation->set_rules('password2', 'Password', 'required|trim|matches[password]');
+		// Validasi input NBM/NPM
+		$this->form_validation->set_rules('nbm_npm', 'NBM/NPM', 'required|trim');
 
 		if ($this->form_validation->run() == false) {
 			$data['title'] = 'Halaman Registrasi';
 			$this->load->view('auth/register', $data);
 		} else {
+			// Proses pengecekan NBM/NPM di database
+			$inputNbmNpm = $this->input->post('nbm_npm');
+			
+			// Cek di tabel mahasiswa dan dosen
+			$this->db->where('npm', $inputNbmNpm);
+			$mahasiswa = $this->db->get('mahasiswa')->row_array();
+			
+			$this->db->where('nbm', $inputNbmNpm);
+			$dosen = $this->db->get('dosen')->row_array();
 
-			// ========= SKEMA CREATE KODE USER =========
-			// Lakukan query untuk mengambil nomor terakhir dari tabel
-			$query = $this->db->query('SELECT MAX(id) AS last_id FROM users');
-			$row = $query->row();
-			$user_code = $row->last_id;
-
-			// Pastikan untuk menangani kasus ketika tabel kosong
-			if ($user_code === NULL) {
-				$user_code = 0;
+			if ($mahasiswa || $dosen) {
+				// Jika NBM/NPM valid, simpan status ke session
+				$name = $mahasiswa ? $mahasiswa['nama'] : $dosen['nama'];
+				$this->session->set_flashdata('success_message', 'NBM/NPM berhasil diverifikasi, Anda didaftarkan sebagai ' . '<strong>' . $name . '</strong>' . '. Silakan lanjutkan pendaftaran.');
+				$this->session->set_flashdata('nbm_npm_valid', true);
+				$this->session->set_userdata('input_nbm_npm', $inputNbmNpm); // Menyimpan input agar tetap ada
+				redirect('auth/register');
+			} else {
+				// Jika NBM/NPM tidak valid, beri pesan error
+				$this->session->set_flashdata('error_message', 'Maaf, NBM/NPM terkait belum didaftarkan admin.');
+				$this->session->set_userdata('input_nbm_npm', $inputNbmNpm); // Menyimpan input agar tetap ada
+				redirect('auth/register');
 			}
-
-			$kode_user = 'ID-' . date('d-m-Y') . '-' . $user_code;
-			$email = $this->input->post('email', true);
-
-			$data = [
-				'kode_user' => $kode_user,
-				'name' => htmlspecialchars($this->input->post('name', true)),
-				'email' => htmlspecialchars($email),
-				'image' => 'default.jpg',
-				'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
-				'role_id' => $_ENV['MEMBER_ROLE_DEFAULT_REGISTRED'],
-				'is_active' => $_ENV['ACTIVE_MEMBER_DEFAULT'],
-				'date_created' => time()
-			];
-
-			// Siapkan token untuk email
-			$token = base64_encode(random_bytes(32));
-			$user_token = [
-				'email' => $email,
-				'token' => $token,
-				'date_created' => time()
-			];
-
-			$this->db->insert('users', $data);
-			$this->db->insert('user_token', $user_token);
-
-			$this->_sendEmail($token, 'verify');
-
-			$this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                <strong>Berhasil...</strong> akun kamu telah didaftarkan, cek email untuk aktivasi akun! <a href="https://mail.google.com" target="_blank">Buka Gmail</a>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>');
-
-			redirect('auth');
 		}
 	}
+
+	// Halaman Register
+	public function register()
+	{
+		// Validasi form input email dan password
+		$this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim');
+		$this->form_validation->set_rules('password', 'Password', 'required|min_length[6]|trim');
+		$this->form_validation->set_rules('password2', 'Ulangi Password', 'required|matches[password]|trim');
+
+		if ($this->form_validation->run() == false) {
+			// Jika validasi gagal, tampilkan form kembali dengan pesan error
+			$this->load->view('auth/register');
+			return;
+		}
+
+		// Ambil inputan email dan password
+		$email = $this->input->post('email');
+		$password = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
+
+		// Ambil NBM/NPM dari sesi
+		$nbm_npm = $this->session->userdata('input_nbm_npm');
+
+		// Cek di tabel mahasiswa dan dosen, kemudian dapatkan ID yang sesuai
+		$mahasiswa = $this->db->get_where('mahasiswa', ['npm' => $nbm_npm])->row_array();
+		$dosen = $this->db->get_where('dosen', ['nbm' => $nbm_npm])->row_array();
+
+		$user_id = null;
+		if (!empty($mahasiswa) && isset($mahasiswa['id'])) {
+			$user_id = $mahasiswa['id']; // ID mahasiswa yang sesuai
+		} elseif (!empty($dosen) && isset($dosen['id'])) {
+			$user_id = $dosen['id']; // ID dosen yang sesuai
+		}
+
+		if ($user_id === null) {
+			// Jika data tidak ditemukan, tampilkan pesan error
+			$this->session->set_flashdata('error_message', 'Data NBM/NPM tidak valid.');
+			$this->load->view('auth/register');
+			return;
+		}
+
+		// Perbarui data di tabel users berdasarkan ID
+		$this->db->set('email', $email);
+		$this->db->set('password', $password);
+		$this->db->where('id_mhs', $user_id); // Sesuaikan dengan nama kolom ID di tabel users
+		$this->db->or_where('id_dosen', $user_id); // Sesuaikan dengan nama kolom ID di tabel users
+		$this->db->update('users');
+
+		if ($this->db->affected_rows() > 0) {
+			// Hapus session input_nbm_npm setelah berhasil
+			$this->session->unset_userdata('input_nbm_npm');
+
+			$name = $mahasiswa ? $mahasiswa['nama'] : $dosen['nama'];
+			// Tampilkan pesan sukses dan redirect ke halaman login
+			$this->session->set_flashdata('success_message', 'Akun ' . '<strong>' . $name . '</strong>' . ' berhasil didaftarkan. Silahkan login disini!');
+			redirect('auth'); // Redirect ke halaman login setelah pendaftaran berhasil
+		} else {
+			// Tampilkan pesan error jika gagal memperbarui data
+			$this->session->set_flashdata('error_message', 'Gagal memperbarui data.');
+			$this->load->view('auth/register');
+		}
+	}
+
 
 	private function _sendEmail($token, $type)
 	{

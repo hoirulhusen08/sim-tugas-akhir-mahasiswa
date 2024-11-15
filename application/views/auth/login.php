@@ -22,6 +22,15 @@
                                     <h1 class="h4 text-gray-900 mb-4"><i class="bi bi-person-fill-lock"></i> Halaman Masuk</h1>
                                 </div>
 
+                                <!-- Pesan berhasil cek NBM/NPM -->
+                                <?php if ($this->session->flashdata('success_message')): ?>
+                                    <p class="text-success text-center"><?= $this->session->flashdata('success_message') ?></p>
+                                <?php endif; ?>
+                                <!-- Pesan gagal cek NBM/NPM -->
+                                <?php if ($this->session->flashdata('error_message')): ?>
+                                    <p class="text-danger text-center"><?= $this->session->flashdata('error_message') ?></p>
+                                <?php endif; ?>
+
                                 <?= $this->session->flashdata('message'); ?>
 
                                 <form class="user" method="post" action="<?= base_url('auth'); ?>">

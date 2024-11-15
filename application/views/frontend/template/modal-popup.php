@@ -26,7 +26,7 @@
             <div class="container">
                 <div class="login-foot text-center pt-2 pb-2 mb-3">
                     <small><a href="<?= base_url('auth/forgotPassword'); ?>">Lupa Password</a></small> |
-                    <small><a href="<?= base_url('auth/register'); ?>">Sudah punya akun? Register</a></small>
+                    <small><a href="<?= base_url('auth/register'); ?>">Belum punya akun? Daftar!</a></small>
                 </div>
             </div>
         </div>

@@ -151,6 +151,7 @@ class Admin extends CI_Controller
 		$data['user'] = $this->db->get_where('users', ['email' => $this->session->userdata('email')])->row_array();
 
 		$data['roles'] = $this->db->get('users_role')->result_array();
+		$data['allDosen'] = $this->db->get('dosen')->result_array();
 
 		// Join tabel users dan users_role
 		$this->db->select('users.*, users_role.role');
@@ -163,22 +164,10 @@ class Admin extends CI_Controller
 		$this->form_validation->set_rules('name', 'Name', 'required|trim', [
 			'required' => 'Kolom nama wajib diisi.',
 		]);
-		$this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[users.email]', [
-			'required' => 'Kolom email wajib diisi.',
-			'valid_email' => 'Bukan email yang benar.',
-			'is_unique' => 'Email sudah terdaftar di database.',
-		]);
-		$this->form_validation->set_rules('password', 'Password', 'required|trim|min_length[8]|matches[password2]', [
-			'required' => 'Kolom password wajib diisi.',
-			'min_length' => 'Panjang password minimal 8 karakter.',
-			'matches' => 'Password tidak sesuai dengan konfirmasi password.',
-		]);
-		$this->form_validation->set_rules('password2', 'Confirm Password', 'required|trim|min_length[8]|matches[password]', [
-			'required' => 'Kolom konfirmasi password wajib diisi.',
-			'min_length' => 'Panjang konfirmasi password minimal 8 karakter.',
-			'matches' => 'Konfirmasi password tidak sesuai dengan password.',
-		]);
 		$this->form_validation->set_rules('role', 'Role', 'required', [
+			'required' => 'Kolom peran wajib diisi.',
+		]);
+		$this->form_validation->set_rules('nbm_npm', 'NBM/NPM', 'required', [
 			'required' => 'Kolom peran wajib diisi.',
 		]);
 
@@ -203,16 +192,38 @@ class Admin extends CI_Controller
 			}
 
 			$kode_user = 'ID-' . date('d-m-Y') . '-' . $user_code;
+			$role_id = $this->input->post('role');
+			// Tentukan jenis_pengguna berdasarkan role
+			$jenis_pengguna = ($role_id == 2) ? 'Mahasiswa' : 'Dosen';
 
+			// Proses insert ke tabel users
 			$data = [
 				'kode_user' => $kode_user,
+				'id_mhs' => null, // Diisi nanti jika peran Mahasiswa
+				'id_dosen' => null, // Diisi nanti jika peran Dosen
+				'jenis_pengguna' => $jenis_pengguna, // Diisi dengan jenis pengguna
 				'name' => htmlspecialchars($this->input->post('name', true)),
-				'email' => htmlspecialchars($this->input->post('email', true)),
-				'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
-				'role_id' => $this->input->post('role'),
+				'role_id' => $role_id,
 				'is_active' => 1,
 				'date_created' => time()
 			];
+
+			if ($role_id == 2) { // Peran Mahasiswa
+				$dataMahasiswa = [
+					'nama' => htmlspecialchars($this->input->post('name', true)),
+					'npm' => htmlspecialchars($this->input->post('nbm_npm', true)),
+					'nama_pa' => htmlspecialchars($this->input->post('nama_pa', true)),
+				];
+				$this->db->insert('mahasiswa', $dataMahasiswa);
+				$data['id_mhs'] = $this->db->insert_id(); // Mendapatkan id terakhir yang diinsert
+			} else { // Peran Dosen
+				$dataDosen = [
+					'nama' => htmlspecialchars($this->input->post('name', true)),
+					'nbm' => htmlspecialchars($this->input->post('nbm_npm', true)),
+				];
+				$this->db->insert('dosen', $dataDosen);
+				$data['id_dosen'] = $this->db->insert_id(); // Mendapatkan id terakhir yang diinsert
+			}
 
 			// Cek jika ada gambar yg diupload
 			$upload_image = $_FILES['image']['name'];
@@ -244,7 +255,7 @@ class Admin extends CI_Controller
 				$data['image'] = 'default.jpg';
 			}
 
-			// Insert data pengguna
+			// Insert data pengguna general
 			$this->db->insert('users', $data);
 
 			// Jika berhasil, set pesan sukses

@@ -65,7 +65,16 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <a href="#" class="btn my-btn-custom" data-toggle="modal" data-target="#addNewUser"><i class="fas fa-solid fa-plus"></i> Tambah Pengguna Baru</a>
+                                <a href="#" class="btn my-btn-custom" data-toggle="modal" data-target="#addNewUser"><i class="fas fa-solid fa-plus"></i> Daftarkan Pengguna Baru</a>
+
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="card-body">
@@ -76,11 +85,10 @@
                                                 <th>#</th>
                                                 <th>Gambar</th>
                                                 <th>Nama</th>
-                                                <th>NPM</th>
-                                                <th>Tgl. Lahir</th>
-                                                <th>Telpon</th>
-                                                <th>Alamat</th>
-                                                <th>Terdaftar</th>
+                                                <th>Email</th>
+                                                <th>Peran</th>
+                                                <th>Didaftarkan</th>
+                                                <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -94,8 +102,14 @@
                                                             <img width="50" src="<?= base_url('assets/image/profile/') . $user['image']; ?>">
                                                         </a>
                                                     </td>
-                                                    <td><?= $user['nama']; ?></td>
-                                                    <td><a href="mailto:<?= $user['email']; ?>"><?= $user['email']; ?></a></td>
+                                                    <td><?= $user['name']; ?></td>
+                                                    <td>
+                                                        <?php if (!empty($user['email'])) : ?>
+                                                            <a href="mailto:<?= $user['email']; ?>"><?= $user['email']; ?></a>
+                                                        <?php else : ?>
+                                                            <small><i class="bi bi-exclamation-triangle-fill"></i> Pengguna belum membuat akun!</small>
+                                                        <?php endif; ?>
+                                                    </td>
                                                     <td>
                                                         <?php if ($user['role'] == $_ENV['APP_ROLE_NAME_1'] || $user['role'] == "Admin") : ?>
                                                             <span class="badge badge-success"><?= $user['role']; ?></span>
@@ -116,12 +130,14 @@
                                                         <?php endif; ?>
                                                     </td>
                                                     <td>
-                                                        <a href="#" class="btn btn-sm btn-primary mb-1" data-toggle="modal" data-target="#editGeneralUser<?= $user['id']; ?>"><i class="bi bi-pencil-square"></i> Ubah</a>
+                                                        <a href="#" class="btn btn-sm btn-success mb-1" title="Lihat detail pengguna"><i class="bi bi-eye"></i> Detail</a>
+
+                                                        <a href="#" class="btn btn-sm btn-primary mb-1" title="Ubah data pengguna" data-toggle="modal" data-target="#editGeneralUser<?= $user['id']; ?>"><i class="bi bi-pencil-square"></i> Ubah</a>
 
                                                         <?php if ($user['role'] == $_ENV['APP_ROLE_NAME_1'] || $user['role'] == 'Admin') : ?>
-                                                            <a href="#" id="notDeleteButtonAdmin" style="cursor: not-allowed;" class="btn btn-sm btn-danger mb-1" onclick="return false;"><i class="bi bi-trash3-fill"></i> Hapus</a>
+                                                            <a href="#" id="notDeleteButtonAdmin" title="Hapus data pengguna" style="cursor: not-allowed;" class="btn btn-sm btn-danger mb-1" onclick="return false;"><i class="bi bi-trash3-fill"></i> Hapus</a>
                                                         <?php else : ?>
-                                                            <a href="<?= base_url('admin/deleteGeneralUser/' . $user['id']); ?>" class="btn btn-sm btn-danger btn-deleted mb-1"><i class="bi bi-trash3-fill"></i> Hapus</a>
+                                                            <a href="<?= base_url('admin/deleteGeneralUser/' . $user['id']); ?>" title="Hapus data pengguna" class="btn btn-sm btn-danger btn-deleted mb-1"><i class="bi bi-trash3-fill"></i> Hapus</a>
                                                         <?php endif; ?>
                                                     </td>
                                                 </tr>
@@ -144,11 +160,11 @@
     </div>
 
     <!-- MODAL ADD NEW USER -->
-    <div class="modal fade" id="addNewUser" tabindex="-1" aria-labelledby="addNewUserLabel" aria-hidden="true">
+    <div class="modal fade" id="addNewUser" aria-labelledby="addNewUserLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-header-popup text-white">
-                    <h5 class="modal-title" id="addNewUserLabel">Tambah Pengguna Baru</h5>
+                    <h5 class="modal-title" id="addNewUserLabel">Daftarkan Pengguna Baru</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="text-white">&times;</span>
                     </button>
@@ -172,14 +188,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <input type="text" name="name" class="form-control <?= (form_error('name') ? 'is-invalid' : '') ?>" id="name" placeholder="Nama lengkap pengguna..." value="<?= set_value('name'); ?>">
-                            <?= form_error('name', '<small class="text-danger pl-1">', '</small>'); ?>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="email" class="form-control <?= (form_error('email') ? 'is-invalid' : '') ?>" id="email" placeholder="Email aktif pengguna..." value="<?= set_value('email'); ?>">
-                            <?= form_error('email', '<small class="text-danger pl-1">', '</small>'); ?>
-                        </div>
-                        <div class="form-group">
                             <select name="role" id="role" class="form-control <?= (form_error('role') ? 'is-invalid' : '') ?>">
                                 <option value="">-- Pilih Peran --</option>
                                 <?php foreach ($roles as $role) : ?>
@@ -190,27 +198,28 @@
                             </select>
                             <?= form_error('role', '<small class="text-danger pl-1">', '</small>'); ?>
                         </div>
-                        <div class="card p-2" style="background-color: #efefef;">
-                            <div class="form-group">
-                                <input type="password" name="password" class="form-control <?= (form_error('password') ? 'is-invalid' : '') ?>" id="generatePasswordDefaultAddUser" placeholder="Password..." value="<?= set_value('password'); ?>">
-                                <?= form_error('password', '<small class="text-danger pl-1">', '</small>'); ?>
-                            </div>
-                            <div class="form-group">
-                                <input type="password" name="password2" class="form-control <?= (form_error('password2') ? 'is-invalid' : '') ?>" id="generatePasswordDefaultAddUser2" placeholder="Konfirmasi Password..." value="<?= set_value('password2'); ?>">
-                                <?= form_error('password2', '<small class="text-danger pl-1">', '</small>'); ?>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" id="togglePasswordCheckboxAddUser" class="custom-checkbox" onchange="togglePasswordVisibility('togglePasswordCheckboxAddUser', 'generatePasswordDefaultAddUser', 'generatePasswordDefaultAddUser2')">
-                                <label for="togglePasswordCheckboxAddUser">Tampilkan Password</label>
-                            </div>
-                            <hr class="mb-2" style="margin-top: -10px;">
-                            <small class="row justify-content-end mr-2"><a href="javascript:void(0)" onclick="return generateDefaultPasswordAddUser()">Buat Password Bawaan?</a>&nbsp; dari (12345678).</small>
-                            <small class="row justify-content-end mr-2"><a href="javascript:void(0)" onclick="return resetPasswordAddUser()">Kosongkan Password Bawaan!</a></small>
+                        <div class="form-group">
+                            <input type="text" name="name" class="form-control <?= (form_error('name') ? 'is-invalid' : '') ?>" id="name" placeholder="Nama lengkap pengguna..." value="<?= set_value('name'); ?>">
+                            <?= form_error('name', '<small class="text-danger pl-1">', '</small>'); ?>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="nbm_npm" class="form-control <?= (form_error('nbm_npm') ? 'is-invalid' : '') ?>" id="nbm_npm" placeholder="NBM / NPM pengguna..." value="<?= set_value('nbm_npm'); ?>">
+                            <?= form_error('nbm_npm', '<small class="text-danger pl-1">', '</small>'); ?>
+                        </div>
+                        <div class="form-group" id="pembimbing-akademik-container" style="display: none;">
+                            <select name="nama_pa" id="nama_pa" class="form-control select2">
+                                <option value="">-- Pilih Pembimbing Akademik --</option>
+                                <?php foreach ($allDosen as $dosen) : ?>
+                                    <option value="<?= $dosen['id']; ?>" <?= set_select('nama', $dosen['id']); ?>>
+                                        <?= $dosen['nama']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn bg-btn-popup"><i class="bi bi-send"></i> Tambah Pengguna</button>
+                        <button type="submit" class="btn bg-btn-popup"><i class="bi bi-send"></i> Daftarkan Pengguna</button>
                     </div>
                 </form>
             </div>
@@ -354,6 +363,26 @@
             }
 
             reader.readAsDataURL(this.files[0]);
+        }
+    });
+</script>
+
+<!-- Mengisi Placeholder pada tambah penggung menjadi dinamis -->
+<script>
+    document.getElementById('role').addEventListener('change', function() {
+        let roleId = this.value;
+        let nbmNpmInput = document.getElementById('nbm_npm');
+        let userName = document.getElementById('name');
+        let pembimbingAkademikContainer = document.getElementById('pembimbing-akademik-container');
+        
+        if (roleId == '2') { // Jika peran adalah Mahasiswa dengan id = 2
+            nbmNpmInput.placeholder = 'NPM Mahasiswa...';
+            userName.placeholder = 'Nama lengkap Mahasiswa...';
+            pembimbingAkademikContainer.style.display = 'block';
+        } else {
+            nbmNpmInput.placeholder = 'NBM dosen...';
+            userName.placeholder = 'Nama lengkap Dosen...';
+            pembimbingAkademikContainer.style.display = 'none';
         }
     });
 </script>

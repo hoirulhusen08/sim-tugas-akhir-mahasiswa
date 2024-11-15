@@ -57,6 +57,15 @@
                         <div class="card">
                             <div class="card-header">
                                 <a href="#" class="btn my-btn-custom" data-toggle="modal" data-target="#addNewRole"><i class="fas fa-solid fa-plus"></i> Tambah Peran Baru</a>
+
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="card-body">

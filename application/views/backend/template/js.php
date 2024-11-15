@@ -52,6 +52,18 @@
 
 <!-- <script src="<?= base_url('assets/template/backend/'); ?>dist/js/adminlte.min.js?v=3.2.0"></script> -->
 
+<!-- Select2 -->
+<script src="<?= base_url('assets/'); ?>plugins/select2/js/select2.full.min.js"></script>
+<script>
+    // Select2 or Input Select with Search (Tanpa Modal)
+    $(document).ready(function() {
+        $('.select2').select2({
+            // placeholder: '-- Pilih --',
+            theme: 'bootstrap4',
+        });
+    });
+</script>
+
 <!-- Config Datatables -->
 <script>
     $(function() {

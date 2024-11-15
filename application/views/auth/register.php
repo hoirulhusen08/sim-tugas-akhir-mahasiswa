@@ -18,11 +18,34 @@
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4"><i class="bi bi-unlock-fill"></i> Buat Akun Sekarang!</h1>
                         </div>
-                        <form class="user" method="post" action="<?= base_url('auth/register'); ?>">
-                            <div class="form-group">
-                                <input type="text" name="name" class="form-control form-control-user" id="name" placeholder="Nama lengkap..." value="<?= set_value('name'); ?>">
-                                <?= form_error('name', '<small class="text-danger">', '</small>'); ?>
+                        
+                        <!-- Pesan berhasil cek NBM/NPM -->
+                        <?php if ($this->session->flashdata('success_message')): ?>
+                            <p class="text-success text-center"><?= $this->session->flashdata('success_message') ?></p>
+                        <?php endif; ?>
+                        <!-- Pesan gagal cek NBM/NPM -->
+                        <?php if ($this->session->flashdata('error_message')): ?>
+                            <p class="text-danger text-center"><?= $this->session->flashdata('error_message') ?></p>
+                        <?php endif; ?>
+
+                        <form method="post" action="<?= base_url('auth/checkNbmNpm'); ?>">
+                            <div class="card bg-light p-3">
+                                <div class="form-group">
+                                    <label for="nbm_npm"><span style="color:red;">*</span> Cek NBM/NPM dahulu!</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nbm_npm" id="nbm_npm" class="form-control" placeholder="Masukan NBM / NPM" value="<?= ($this->session->flashdata('input_nbm_npm')) ? $this->session->flashdata('input_nbm_npm') : ''; ?>">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn bg-btn-register"><i class="bi bi-arrow-clockwise"></i> Check</button>
+                                        </div>
+                                    </div>
+                                    <?= form_error('nbm_npm', '<small class="text-danger">', '</small>'); ?>
+                                </div>
                             </div>
+                        </form>
+
+                        <hr class="mb-4 mt-4" />
+
+                        <form class="user" method="post" action="<?= base_url('auth/register'); ?>">
                             <div class="form-group">
                                 <input type="text" name="email" class="form-control form-control-user" id="email" placeholder="Email yang aktif..." value="<?= set_value('email'); ?>">
                                 <?= form_error('email', '<small class="text-danger">', '</small>'); ?>
@@ -37,7 +60,7 @@
                                 </div>
                             </div>
                             <button type="submit" class="btn bg-btn-register btn-user btn-block">
-                                Registrasi
+                                Register
                             </button>
                             <div class="row text-center mt-3">
                                 <label><small><input type="checkbox" checked disabled> Dengan mengklik <strong>Daftar</strong>, Anda menyetujui <a href="#" data-toggle="modal" data-target="#termsModal">Ketentuan</a> dan <a href="#" data-toggle="modal" data-target="#privacyPolicyModal">Kebijakan Privasi</a> kami. Semua data anda kami jaga kerahasiaanya.</small></label>

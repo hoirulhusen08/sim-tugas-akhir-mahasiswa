@@ -6,7 +6,7 @@
             <!-- Info Panel -->
             <?php
             if ($this->session->userdata('role_id') == 1) {
-                echo "Staff";
+                echo "Admin";
             } else if ($this->session->userdata('role_id') == 2) {
                 echo "Mahasiswa";
             } else if ($this->session->userdata('role_id') == 3) {
@@ -15,6 +15,10 @@
                 echo "Kaprodi";
             } else if ($this->session->userdata('role_id') == 5) {
                 echo "Dekan";
+            } else if ($this->session->userdata('role_id') == 6) {
+                echo "Dosen";
+            } else {
+                echo "Staff";
             }
             ?>
         </span>
@@ -66,15 +70,7 @@
                 <!-- LOOPING MENU -->
                 <?php foreach ($menus as $menu) : ?>
                     <small class="text-white text-uppercase">
-                        <!-- <?= $menu['menu']; ?> --> <!-- Kode Default -->
-                        
-                        <?php 
-                            if ($menu['menu'] == "Admin") {
-                                echo "Staff";
-                            } else {
-                                echo $menu['menu'];
-                            }
-                        ?>
+                        <?= $menu['menu']; ?>
                     </small>
 
                     <!-- SIAPKAN SUB-MENU sesuai MENU -->

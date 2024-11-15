@@ -38,6 +38,10 @@
     <link rel="stylesheet" href="<?= base_url('assets/'); ?>plugins/sweetalert2/sweetalert2.min.css">
     <script src="<?= base_url('assets/'); ?>plugins/sweetalert2/sweetalert2.min.js"></script>
 
+    <!-- Select2 -->
+    <link rel="stylesheet" href="<?= base_url('assets/'); ?>plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="<?= base_url('assets/'); ?>plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
     <!-- My CSS Dashboard -->
     <link rel="stylesheet" href="<?= base_url('assets/css/style-dashboard.css'); ?>">
 
