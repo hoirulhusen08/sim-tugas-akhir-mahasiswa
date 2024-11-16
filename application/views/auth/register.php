@@ -19,24 +19,24 @@
                             <h1 class="h4 text-gray-900 mb-4"><i class="bi bi-unlock-fill"></i> Buat Akun Sekarang!</h1>
                         </div>
                         
-                        <!-- Pesan berhasil cek NBM/NPM -->
-                        <?php if ($this->session->flashdata('success_message')): ?>
-                            <p class="text-success text-center"><?= $this->session->flashdata('success_message') ?></p>
-                        <?php endif; ?>
-                        <!-- Pesan gagal cek NBM/NPM -->
-                        <?php if ($this->session->flashdata('error_message')): ?>
-                            <p class="text-danger text-center"><?= $this->session->flashdata('error_message') ?></p>
-                        <?php endif; ?>
+                        <!-- Pesan Success or Failed -->
+                        <?= $this->session->flashdata('message'); ?>
 
                         <form method="post" action="<?= base_url('auth/checkNbmNpm'); ?>">
                             <div class="card bg-light p-3">
                                 <div class="form-group">
                                     <label for="nbm_npm"><span style="color:red;">*</span> Cek NBM/NPM dahulu!</label>
                                     <div class="input-group">
-                                        <input type="text" name="nbm_npm" id="nbm_npm" class="form-control" placeholder="Masukan NBM / NPM" value="<?= ($this->session->flashdata('input_nbm_npm')) ? $this->session->flashdata('input_nbm_npm') : ''; ?>">
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn bg-btn-register"><i class="bi bi-arrow-clockwise"></i> Check</button>
-                                        </div>
+                                        <input type="text" name="nbm_npm" id="nbm_npm" class="form-control <?= ($this->session->flashdata('nbm_npm_valid')) ? "is-valid" : ''; ?> <?= ($this->session->flashdata('nbm_npm_invalid')) ? "is-invalid" : ''; ?>" placeholder="Masukan NBM / NPM" value="<?= ($this->session->flashdata('input_nbm_npm_exist')) ? $this->session->flashdata('input_nbm_npm_exist') : ''; ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? "disabled" : ''; ?>>
+                                            <?php if ($this->session->flashdata('nbm_npm_valid')): ?>
+                                                <div class="valid-feedback">
+                                                    Looks good, NBM/NPM telah didaftarkan Admin!
+                                                </div>
+                                            <?php else : ?>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn bg-btn-register"><i class="bi bi-arrow-clockwise"></i> Check</button>
+                                                </div>
+                                            <?php endif; ?>
                                     </div>
                                     <?= form_error('nbm_npm', '<small class="text-danger">', '</small>'); ?>
                                 </div>
@@ -47,19 +47,20 @@
 
                         <form class="user" method="post" action="<?= base_url('auth/register'); ?>">
                             <div class="form-group">
-                                <input type="text" name="email" class="form-control form-control-user" id="email" placeholder="Email yang aktif..." value="<?= set_value('email'); ?>">
+                                <input type="text" name="email" class="form-control form-control-user" id="email" placeholder="Email yang aktif..." value="<?= set_value('email'); ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?>>
                                 <?= form_error('email', '<small class="text-danger">', '</small>'); ?>
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="password" name="password" class="form-control form-control-user" id="password" placeholder="Password..." value="<?= set_value('password'); ?>">
+                                    <input type="password" name="password" class="form-control form-control-user" id="password" placeholder="Password..." value="<?= set_value('password'); ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?>>
                                     <?= form_error('password', '<small class="text-danger">', '</small>'); ?>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input type="password" name="password2" class="form-control form-control-user" id="password2" placeholder="Ulangi password..." value="<?= set_value('password2'); ?>">
+                                    <input type="password" name="password2" class="form-control form-control-user" id="password2" placeholder="Ulangi password..." value="<?= set_value('password2'); ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?>>
+                                    <?= form_error('password2', '<small class="text-danger">', '</small>'); ?>
                                 </div>
                             </div>
-                            <button type="submit" class="btn bg-btn-register btn-user btn-block">
+                            <button type="submit" class="btn bg-btn-register btn-user btn-block" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?>>
                                 Register
                             </button>
                             <div class="row text-center mt-3">
