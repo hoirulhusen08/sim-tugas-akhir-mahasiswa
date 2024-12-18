@@ -1,0 +1,4 @@
+INI ADALAH CATATAN
+1. Gunakan PHP versi 8.0 minimal namun dibawah 8.2 untuk kinerja bagus
+2. Dibangun menggunakan Framework PHP Codeigniter 3
+3. Copyright by @hoirulhusen08

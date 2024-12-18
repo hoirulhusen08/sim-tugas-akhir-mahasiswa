@@ -185,9 +185,9 @@ class Auth extends CI_Controller
 			'required' => 'Inputan ini tidak boleh kosong!',
 			'valid_email' => 'Email yang dimasukan tidak valid!'
 		]);
-		$this->form_validation->set_rules('password', 'Password', 'required|min_length[6]|trim', [
+		$this->form_validation->set_rules('password', 'Password', 'required|min_length[8]|trim', [
 			'required' => 'Inputan ini tidak boleh kosong!',
-			'min_length' => 'Panjang minimal 6 Karakter!'
+			'min_length' => 'Panjang minimal 8 Karakter!'
 		]);
 		$this->form_validation->set_rules('password2', 'Konfirmasi Password', 'required|matches[password]|trim', [
 			'required' => 'Inputan ini tidak boleh kosong!',
@@ -196,7 +196,8 @@ class Auth extends CI_Controller
 
 		if ($this->form_validation->run() == false) {
 			// Jika validasi gagal, tampilkan form kembali dengan pesan error
-			$this->load->view('auth/register');
+			$data['title'] = 'Halaman Registrasi';
+			$this->load->view('auth/register', $data);
 			return;
 		}
 

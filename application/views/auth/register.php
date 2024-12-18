@@ -25,7 +25,12 @@
                         <form method="post" action="<?= base_url('auth/checkNbmNpm'); ?>">
                             <div class="card bg-light p-3">
                                 <div class="form-group">
-                                    <label for="nbm_npm"><span style="color:red;">*</span> Cek NBM/NPM dahulu!</label>
+                                    <label for="nbm_npm">
+                                        <span style="color:red;">*</span> Cek NBM/NPM dahulu!
+                                        <span class="d-inline-block" data-toggle="tooltip" data-placement="bottom" title="Sebelum membuat Akun, anda wajib meminta Admin mendaftarkan NBM/NPM kamu dahulu!">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </span>
+                                    </label>
                                     <div class="input-group">
                                         <input type="text" name="nbm_npm" id="nbm_npm" class="form-control <?= ($this->session->flashdata('nbm_npm_valid')) ? "is-valid" : ''; ?> <?= ($this->session->flashdata('nbm_npm_invalid')) ? "is-invalid" : ''; ?>" placeholder="Masukan NBM / NPM" value="<?= ($this->session->flashdata('input_nbm_npm_exist')) ? $this->session->flashdata('input_nbm_npm_exist') : ''; ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? "disabled" : ''; ?>>
                                             <?php if ($this->session->flashdata('nbm_npm_valid')): ?>
@@ -52,13 +57,17 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="password" name="password" class="form-control form-control-user" id="password" placeholder="Password..." value="<?= set_value('password'); ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?>>
+                                    <input type="password" name="password" class="form-control form-control-user" id="password" placeholder="Password..." value="<?= set_value('password'); ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?> oninput="toggleCheckboxVisibility()">
                                     <?= form_error('password', '<small class="text-danger">', '</small>'); ?>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input type="password" name="password2" class="form-control form-control-user" id="password2" placeholder="Ulangi password..." value="<?= set_value('password2'); ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?>>
+                                    <input type="password" name="password2" class="form-control form-control-user" id="password2" placeholder="Ulangi password..." value="<?= set_value('password2'); ?>" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?> oninput="toggleCheckboxVisibility()">
                                     <?= form_error('password2', '<small class="text-danger">', '</small>'); ?>
                                 </div>
+                            </div>
+                            <div class="form-group" id="checkboxContainer" style="margin-bottom:7px; display:none;">
+                                <input type="checkbox" id="togglePasswordCheckbox" onchange="togglePasswordVisibility('togglePasswordCheckbox', 'password', 'password2')">
+                                <label for="togglePasswordCheckbox">Tampilkan Password</label>
                             </div>
                             <button type="submit" class="btn bg-btn-register btn-user btn-block" <?= ($this->session->flashdata('nbm_npm_valid')) ? '' : 'disabled'; ?>>
                                 Register
@@ -89,3 +98,35 @@
 
 <!-- JS -->
 <?php $this->load->view('frontend/template/js'); ?>
+
+<script>
+    // ============================ SHOW PASSWORD =================================
+    function togglePasswordVisibility(checkboxId, inputId1, inputId2) {
+        let checkbox = document.getElementById(checkboxId);
+        let passwordInput1 = document.getElementById(inputId1);
+        let passwordInput2 = document.getElementById(inputId2);
+
+        // Toggle password visibility based on checkbox state
+        if (checkbox.checked) {
+            passwordInput1.type = "text";
+            passwordInput2.type = "text";
+        } else {
+            passwordInput1.type = "password";
+            passwordInput2.type = "password";
+        }
+    }
+
+    // Munculkan Checkbox Tampilkan Password
+    function toggleCheckboxVisibility() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('password2').value;
+        const checkboxContainer = document.getElementById('checkboxContainer');
+        
+        // Tampilkan checkbox jika salah satu inputan sudah terisi karakter
+        if (password.length > 0 || confirmPassword.length > 0) {
+            checkboxContainer.style.display = 'block';
+        } else {
+            checkboxContainer.style.display = 'none';
+        }
+    }
+</script>

@@ -64,6 +64,13 @@
     });
 </script>
 
+<!-- Tooltips Bootstrap -->
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+
 <!-- Config Datatables -->
 <script>
     $(function() {

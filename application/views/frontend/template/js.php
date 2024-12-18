@@ -14,8 +14,15 @@
 
 <!-- Bootstrap Bundle -->
 <script src="<?= base_url('assets/plugins/jquery/jquery.slim.min.js'); ?>"></script>
-<script src="<?= base_url('assets/plugins/popper/popper.min.js'); ?>"></script>
-<script src="<?= base_url('assets/plugins/bootstrap/js/bootstrap.min.js'); ?>"></script>
+<!-- <script src="<?= base_url('assets/plugins/popper/popper.min.js'); ?>"></script> -->
+<script src="<?= base_url('assets/plugins/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
+
+<!-- Tooltips Bootstrap -->
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 
 <!-- Swiper -->
 <script src="<?= base_url('assets/plugins/swiper/js/swiper-bundle.min.js'); ?>"></script>
